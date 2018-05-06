@@ -9,6 +9,11 @@ import java.util.Date;
 
 public class Casal implements Serializable{
 
+    /**
+     * Chave que identifica o casal
+     */
+    public static final String CASAL_INFO = "CasalInfo";
+
     private String noivo;
 
     private String noiva;
@@ -41,10 +46,8 @@ public class Casal implements Serializable{
 
     @Override
     public String toString() {
-        return "Casal{" +
-                "noivo='" + noivo + '\'' +
-                ", noiva='" + noiva + '\'' +
-                ", usuario=" + usuario +
-                '}';
+        return "noivo=" + noivo +
+                ", noiva=" + noiva +
+                ", " + usuario.toString() + "\n";
     }
 }

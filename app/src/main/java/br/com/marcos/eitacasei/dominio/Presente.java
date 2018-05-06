@@ -10,9 +10,14 @@ import java.io.Serializable;
 
 public class Presente implements Serializable {
 
+    /**
+     * Chave que identifica o presente
+     */
+    public static final String PRESENTE_INFO = "PresenteInfo";
+
     private String produto;
 
-    private Bitmap foto;
+    private SerialBitmap foto;
 
     public String getProduto() {
         return produto;
@@ -22,11 +27,11 @@ public class Presente implements Serializable {
         this.produto = produto;
     }
 
-    public Bitmap getFoto() {
+    public SerialBitmap getFoto() {
         return foto;
     }
 
-    public void setFoto(Bitmap foto) {
+    public void setFoto(SerialBitmap foto) {
         this.foto = foto;
     }
 }

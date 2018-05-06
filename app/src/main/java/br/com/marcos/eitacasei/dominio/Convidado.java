@@ -8,9 +8,12 @@ import java.io.Serializable;
 
 public class Convidado implements Serializable{
 
-    private String nome;
+    /**
+     * Chave que identifica o convidado
+     */
+    public static final String CONVIDADO_INFO = "ConvidadoInfo";
 
-    private Usuario usuario;
+    private String nome;
 
     public String getNome() {
         return nome;
@@ -18,13 +21,5 @@ public class Convidado implements Serializable{
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
     }
 }

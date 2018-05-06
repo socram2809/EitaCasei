@@ -13,6 +13,7 @@ import android.widget.EditText;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 import br.com.marcos.eitacasei.R;
 import br.com.marcos.eitacasei.dominio.Casal;
@@ -43,7 +44,7 @@ public class ManterCasalActivity extends Activity {
         Casal casal = new Casal();
         casal.setUsuario(new Usuario());
         casal.getUsuario().setLogin(login.getText().toString());
-        casal.getUsuario().setSenha(senha.getText().toString());
+        casal.getUsuario().setSenha(senha.getText().toString());;
         casal.setNoivo(noivo.getText().toString());
         casal.setNoiva(noiva.getText().toString());
 
@@ -58,11 +59,13 @@ public class ManterCasalActivity extends Activity {
             //Memória Interna
 			folder = getFilesDir();
 
+			FileOutputStream fos = null;
+
             try {
 
                 File arquivo = new File(folder, FILENAME);
 
-                FileOutputStream fos = new FileOutputStream(arquivo);
+                fos = new FileOutputStream(arquivo);
                 fos.write(casal.toString().getBytes());
                 fos.close();
 
@@ -79,7 +82,19 @@ public class ManterCasalActivity extends Activity {
                 startActivity(telaLogin);
 
             } catch (Exception e) {
-                Log.e("casal", "Erro salvando arquivo", e);
+                Log.e("eitacasei", "Erro ao salvar arquivo", e);
+            } finally{
+
+                try {
+
+                    if (fos != null)
+                        fos.close();
+
+                } catch (IOException ex) {
+
+                    Log.e("eitacasei", "Erro ao fechar conexão com o arquivo", ex);
+
+                }
             }
 
         }

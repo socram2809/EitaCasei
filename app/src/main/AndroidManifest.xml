@@ -25,9 +25,6 @@
         <activity android:name=".activities.ListaPresentesActivity">
         </activity>
 
-        <activity android:name=".activities.ManterConvidadoActivity">
-        </activity>
-
         <activity android:name=".activities.ManterPresenteActivity">
         </activity>
 
