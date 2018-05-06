@@ -43,11 +43,29 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/logar"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="logar"
-        android:text="Logar"/>
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/logar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="logar"
+            android:text="Logar"/>
+
+        <TextView
+            android:id="@+id/txtCadastrarUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:autoLink="all"
+            android:gravity="center"
+            android:padding="20px"
+            android:onClick="cadastrarUsuario"
+            android:text="Cadastre-se"/>
+
+    </LinearLayout>
 
 </LinearLayout>

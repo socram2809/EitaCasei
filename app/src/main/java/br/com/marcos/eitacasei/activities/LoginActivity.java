@@ -48,4 +48,16 @@ public class LoginActivity extends Activity {
 
         startActivity(telaPrincipal);*/
     }
+
+    /**
+     * Redireciona para a página de cadastro de usuário
+     * @param view
+     */
+    public void cadastrarUsuario(View view){
+
+        Intent telaCadastroUsuario = new Intent(this, CadastrarUsuarioActivity.class);
+
+        startActivity(telaCadastroUsuario);
+
+    }
 }
