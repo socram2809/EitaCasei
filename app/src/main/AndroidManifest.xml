@@ -16,7 +16,19 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.CadastrarUsuarioActivity">
+        <activity android:name=".activities.ManterCasalActivity">
+        </activity>
+
+        <activity android:name=".activities.ListaConvidadosActivity">
+        </activity>
+
+        <activity android:name=".activities.ListaPresentesActivity">
+        </activity>
+
+        <activity android:name=".activities.ManterConvidadoActivity">
+        </activity>
+
+        <activity android:name=".activities.ManterPresenteActivity">
         </activity>
 
     </application>

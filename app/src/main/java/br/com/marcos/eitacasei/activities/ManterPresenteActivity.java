@@ -6,5 +6,5 @@ import android.app.Activity;
  * Created by Marcos on 06/05/18.
  */
 
-public class ListaCasaisActivity extends Activity {
+public class ManterPresenteActivity extends Activity {
 }

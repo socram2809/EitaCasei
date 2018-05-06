@@ -44,29 +44,48 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/logar"
+        <TextView
+            android:id="@+id/textoNoivo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="logar"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="Logar"/>
+            android:text="Noivo:"/>
 
-        <TextView
-            android:id="@+id/txtCadastrarUsuario"
+        <EditText
+            android:id="@+id/noivo"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:padding="20px"
-            android:onClick="cadastrarUsuario"
-            android:text="Cadastre-se Casal"/>
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textoNoiva"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Noiva:"/>
+
+        <EditText
+            android:id="@+id/noiva"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/cadastrarCasal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="cadastrarCasal"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="Cadastrar"/>
 
 </LinearLayout>

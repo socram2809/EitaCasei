@@ -6,5 +6,5 @@ import android.app.Activity;
  * Created by Marcos on 06/05/18.
  */
 
-public class CadastraCasalActivity extends Activity {
+public class ListaConvidadosActivity extends Activity {
 }
