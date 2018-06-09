@@ -15,9 +15,32 @@ public class Presente implements Serializable {
      */
     public static final String PRESENTE_INFO = "PresenteInfo";
 
+    /**
+     * Identificador do presente
+     */
+    private Long id;
+
+    /**
+     * Nome do produto
+     */
     private String produto;
 
-    private SerialBitmap foto;
+    /**
+     * Foto do produto
+     */
+    private byte[] foto;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setFoto(byte[] foto) {
+        this.foto = foto;
+    }
 
     public String getProduto() {
         return produto;
@@ -25,13 +48,5 @@ public class Presente implements Serializable {
 
     public void setProduto(String produto) {
         this.produto = produto;
-    }
-
-    public SerialBitmap getFoto() {
-        return foto;
-    }
-
-    public void setFoto(SerialBitmap foto) {
-        this.foto = foto;
     }
 }

@@ -7,6 +7,7 @@ import java.io.Serializable;
 /**
  * Created by Marcos on 06/05/18.
  */
+@Deprecated
 public class SerialBitmap implements Serializable {
     private final int [] pixels;
     private final int width , height;
