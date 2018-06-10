@@ -1,25 +1,39 @@
 package br.com.marcos.eitacasei.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import br.com.marcos.eitacasei.R;
 import br.com.marcos.eitacasei.adapters.PresenteAdapter;
 import br.com.marcos.eitacasei.dominio.Presente;
+import br.com.marcos.eitacasei.services.PresenteService;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Marcos on 06/05/18.
  */
-
 public class ListaPresentesActivity extends Activity {
 
     /**
@@ -28,35 +42,130 @@ public class ListaPresentesActivity extends Activity {
     private PresenteAdapter presentesAdapter;
 
     /**
-     * Lista dos presentes do casal
+     * Define a lista de presentes
      */
     private ArrayList<Presente> presentes;
+
+    /**
+     * Presente a ser removido
+     */
+    private Presente presenteSelecionado;
+
+    /**
+     * ListView dos presentes
+     */
+    private ListView listaPresentes;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lista_presentes);
 
-        //Trata o caso dessa Activity ter sido chamada pela de criação de Presentes
-        Intent presenteCriado = getIntent();
-        if(presenteCriado != null && presenteCriado.getExtras() != null
-                && presenteCriado.getExtras().get(Presente.PRESENTE_INFO) != null){
-            presentes = (ArrayList<Presente>) presenteCriado.getExtras().get(Presente.PRESENTE_INFO);
+        listaPresentes = findViewById(R.id.listaPresentes);
+
+        listaPresentes();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_presente, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.editar:
+                editaPresente(presentes.get(info.position));
+                return true;
+            case R.id.remover:
+                removePresente(presentes.get(info.position));
+                return true;
+            default:
+                return super.onContextItemSelected(item);
         }
+    }
 
-        if(savedInstanceState != null){
-            presentes = (ArrayList<Presente>) savedInstanceState.getSerializable("presentes");
-        }
+    /**
+     * Edita o presente
+     */
+    private void editaPresente(Presente presente){
 
-        if(presentes == null) {
-            presentes = new ArrayList<Presente>();
-        }
+        Intent editarPresente = new Intent(this, ManterPresenteActivity.class);
 
-        ListView listaPresentes = findViewById(R.id.listaPresentes);
-        presentesAdapter = new PresenteAdapter(this, presentes);
-        listaPresentes.setAdapter(presentesAdapter);
+        editarPresente.putExtra(Presente.PRESENTE_EDIT, presente);
 
-        presentesAdapter.notifyDataSetChanged();
+        startActivity(editarPresente);
+    }
+
+    /**
+     * Remove o presente
+     */
+    private void removePresente(final Presente presente){
+
+        presenteSelecionado = presente;
+
+        //Cria o gerador do AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //Define o título
+        builder.setTitle("Remoção");
+        //Define a mensagem
+        builder.setMessage("Deseja realmente remover esse presente?");
+        //Define um botão como positivo
+        builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                deletaPresente();
+
+                presentes.remove(presenteSelecionado);
+
+                presentesAdapter.notifyDataSetChanged();
+            }
+        });
+        //Define um botão como negativo
+        builder.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //Não faz nada...
+            }
+        });
+        //Cria o alert dialog
+        AlertDialog alert = builder.create();
+        //Exibe
+        alert.show();
+    }
+
+    /**
+     * Deleta o presente no Web Service
+     */
+    private void deletaPresente(){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(LoginActivity.baseURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        PresenteService service = retrofit.create(PresenteService.class);
+
+        Call<Presente> callPresente = service.deletaPresente(presenteSelecionado.getId());
+
+        callPresente.enqueue(new Callback<Presente>(){
+
+            @Override
+            public void onResponse(Call<Presente> call, Response<Presente> response) {
+
+                Toast.makeText(ListaPresentesActivity.this,
+                        "Presente "+presenteSelecionado.getProduto()+" removido com sucesso!",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<Presente> call, Throwable t) {
+                Log.e(ListaPresentesActivity.this.getClass().getName(), "ERRO", t);
+            }
+        });
     }
 
     @Override
@@ -84,12 +193,6 @@ public class ListaPresentesActivity extends Activity {
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable("presentes",presentes);
-    }
-
     /**
      * Redireciona para a tela de cadastro de presentes
      * @param view
@@ -97,8 +200,49 @@ public class ListaPresentesActivity extends Activity {
     public void cadastrarPresente(View view){
         Intent telaCadastroPresente = new Intent(this, ManterPresenteActivity.class);
 
-        telaCadastroPresente.putExtra(Presente.PRESENTE_INFO, presentes);
-
         startActivity(telaCadastroPresente);
+    }
+
+    /**
+     * Consulta a lista de presentes pelo Web Service
+     * @return
+     */
+    private void listaPresentes(){
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        // Seta o nível de debug do Retrofit
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+        //Adiciona o interceptor de log
+        httpClient.addInterceptor(logging);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(LoginActivity.baseURL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build())
+                .build();
+
+        PresenteService service = retrofit.create(PresenteService.class);
+
+        Call<List<Presente>> callPresentes = service.listarPresentes();
+
+        callPresentes.enqueue(new Callback<List<Presente>>() {
+            @Override
+            public void onResponse(Call<List<Presente>> call, Response<List<Presente>> response) {
+
+                presentes = (ArrayList<Presente>) response.body();
+
+                presentesAdapter = new PresenteAdapter(ListaPresentesActivity.this, presentes);
+                listaPresentes.setAdapter(presentesAdapter);
+
+                registerForContextMenu(listaPresentes);
+            }
+
+            @Override
+            public void onFailure(Call<List<Presente>> call, Throwable t) {
+                Log.e(ListaPresentesActivity.this.getClass().getName(), "ERRO", t);
+            }
+        });
     }
 }

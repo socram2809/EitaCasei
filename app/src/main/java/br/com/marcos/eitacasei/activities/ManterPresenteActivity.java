@@ -1,25 +1,36 @@
 package br.com.marcos.eitacasei.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import br.com.marcos.eitacasei.R;
 import br.com.marcos.eitacasei.dominio.Presente;
 import br.com.marcos.eitacasei.dominio.SerialBitmap;
 import br.com.marcos.eitacasei.services.PresenteService;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,26 +44,40 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ManterPresenteActivity extends Activity {
 
     /**
+     * Presente a ser mantido
+     */
+    private Presente presente;
+
+    /**
      * Constante que identifica a subActivity de tirar foto
      */
     private static final int TIRAR_FOTO = 1;
-
-    /**
-     * Lista de Presentes
-     */
-    private ArrayList<Presente> presentes;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.manter_presente);
 
-        Intent telaAnterior = getIntent();
+        Intent edicaoPresente = getIntent();
 
-        presentes = (ArrayList<Presente>) telaAnterior.getExtras().get(Presente.PRESENTE_INFO);
+        //Caso seja a alteração de um presente
+        if(edicaoPresente != null && edicaoPresente.getExtras() != null
+                && edicaoPresente.getExtras().get(Presente.PRESENTE_EDIT) != null) {
 
-        if(presentes == null){
-            presentes = new ArrayList<Presente>();
+            presente = (Presente) edicaoPresente.getExtras().get(Presente.PRESENTE_EDIT);
+            EditText produto = findViewById(R.id.nomeProduto);
+            ImageView foto = findViewById(R.id.fotoProduto);
+            produto.setText(presente.getProduto());
+
+            byte[] bytes = Base64.decode(presente.getFoto(), Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            foto.setImageBitmap(bitmap);
+
+        }else{
+
+            presente = new Presente();
+            presente.setId(new Long(0));
+
         }
     }
 
@@ -80,43 +105,43 @@ public class ManterPresenteActivity extends Activity {
     }
 
     /**
-     * Insere o presente
+     * Mantém o presente
      * @param view
      */
-    public void inserirPresente(View view){
+    public void manterPresente(View view){
         EditText nomeProduto = findViewById(R.id.nomeProduto);
         ImageView fotoProduto = findViewById(R.id.fotoProduto);
-        Presente presente = new Presente();
         presente.setProduto(nomeProduto.getText().toString());
         Bitmap bitmap = ((BitmapDrawable) fotoProduto.getDrawable()).getBitmap();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] bitmapdata = stream.toByteArray();
-        presente.setFoto(bitmapdata);
+        ByteArrayOutputStream baos = new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+        byte[] b=baos.toByteArray();
+        String temp = Base64.encodeToString(b, Base64.DEFAULT);
+        presente.setFoto(temp);
 
         cadastrarPresente(presente);
-
-        //A ser substituído pela listagem do Webservice
-        Intent telaListaPresentes = new Intent(this, ListaPresentesActivity.class);
-
-        presentes.add(presente);
-
-        telaListaPresentes.putExtra(Presente.PRESENTE_INFO, presentes);
-
-        startActivity(telaListaPresentes);
-        //...
     }
 
-    //Cadastra o presente pelo Webservice
+    //Mantém o presente pelo Webservice
     private void cadastrarPresente(Presente presente){
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        // Seta o nível de debug do Retrofit
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+
+        //Adiciona o interceptor de log
+        httpClient.addInterceptor(logging);
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(LoginActivity.baseURL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build())
                 .build();
 
         PresenteService service = retrofit.create(PresenteService.class);
 
-        Call<Presente> callPresente = service.inserirPresente(presente);
+        Call<Presente> callPresente = service.manterPresente(presente);
 
         callPresente.enqueue(new Callback<Presente>(){
 
@@ -125,7 +150,7 @@ public class ManterPresenteActivity extends Activity {
                 Presente presente = response.body();
 
                 Toast.makeText(ManterPresenteActivity.this,
-                        "Presente "+presente.getId()+" cadastrada com sucesso!",
+                        "Presente "+presente.getProduto()+" cadastrado com sucesso!",
                         Toast.LENGTH_SHORT).show();
 
                 Intent telaListaPresentes = new Intent(ManterPresenteActivity.this, ListaPresentesActivity.class);
@@ -135,8 +160,16 @@ public class ManterPresenteActivity extends Activity {
 
             @Override
             public void onFailure(Call<Presente> call, Throwable t) {
-
+                Log.e(ManterPresenteActivity.this.getClass().getName(), "ERRO", t);
             }
         });
+    }
+
+    /**
+     * Volta para a listagem de presentes
+     * @param view
+     */
+    public void cancelar(View view){
+        finish();
     }
 }

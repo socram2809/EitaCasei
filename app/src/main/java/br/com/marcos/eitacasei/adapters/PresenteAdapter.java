@@ -1,6 +1,9 @@
 package br.com.marcos.eitacasei.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import br.com.marcos.eitacasei.R;
@@ -43,7 +47,10 @@ public class PresenteAdapter extends ArrayAdapter<Presente> {
         Presente presente = presentes.get(position);
 
         textProduto.setText(presente.getProduto());
-        fotoProduto.setImageBitmap(presente.getFoto().getBitmap());
+
+        byte[] bytes = Base64.decode(presente.getFoto(), Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        fotoProduto.setImageBitmap(bitmap);
 
         return rowView;
     }

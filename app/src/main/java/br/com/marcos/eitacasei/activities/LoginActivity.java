@@ -36,7 +36,7 @@ public class LoginActivity extends Activity {
     /**
      * URI base para o serviço
      */
-    public static final String baseURL = "https://eitacaseiservice.herokuapp.com";
+    public static final String baseURL = "http://eitacaseiservice.herokuapp.com";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

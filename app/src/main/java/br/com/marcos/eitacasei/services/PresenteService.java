@@ -27,14 +27,14 @@ public interface PresenteService {
     Call<List<Presente>> listarPresentes();
 
     /**
-     * Cadastra o presente do casal
+     * Mantém o presente do casal
      * @return
      */
     @POST("/presente")
     @Headers({
             "Accept: application/json"
     })
-    Call<Presente> inserirPresente(@Body Presente presente);
+    Call<Presente> manterPresente(@Body Presente presente);
 
     /**
      * Consulta um presente específico
