@@ -1,5 +1,7 @@
 package br.com.marcos.eitacasei.dominio;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.graphics.Bitmap;
 
 import java.io.Serializable;
@@ -8,7 +10,7 @@ import java.sql.Blob;
 /**
  * Created by Marcos on 06/05/18.
  */
-
+@Entity
 public class Presente implements Serializable {
 
     /**
@@ -25,6 +27,7 @@ public class Presente implements Serializable {
     /**
      * Identificador do presente
      */
+    @PrimaryKey(autoGenerate = true)
     private long id;
 
     /**
