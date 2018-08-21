@@ -2,6 +2,7 @@ package br.com.marcos.eitacasei.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +31,7 @@ import br.com.marcos.eitacasei.R;
 import br.com.marcos.eitacasei.dominio.Presente;
 import br.com.marcos.eitacasei.dominio.SerialBitmap;
 import br.com.marcos.eitacasei.services.PresenteService;
+import br.com.marcos.eitacasei.view.PresenteViewModel;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -40,8 +43,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by Marcos on 06/05/18.
  */
-
-public class ManterPresenteActivity extends Activity {
+public class ManterPresenteActivity extends AppCompatActivity {
 
     /**
      * Presente a ser mantido
@@ -53,10 +55,17 @@ public class ManterPresenteActivity extends Activity {
      */
     private static final int TIRAR_FOTO = 1;
 
+    /**
+     * Gerencia os dados relativos a UI em relação aos presentes
+     */
+    private PresenteViewModel presenteViewModel;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.manter_presente);
+
+        presenteViewModel = ViewModelProviders.of(this).get(PresenteViewModel.class);
 
         Intent edicaoPresente = getIntent();
 
@@ -119,7 +128,13 @@ public class ManterPresenteActivity extends Activity {
         String temp = Base64.encodeToString(b, Base64.DEFAULT);
         presente.setFoto(temp);
 
-        cadastrarPresente(presente);
+        if(presente.getId() == 0){
+            presenteViewModel.inserir(presente);
+        }else{
+            presenteViewModel.atualizar(presente);
+        }
+
+        //cadastrarPresente(presente);
     }
 
     //Mantém o presente pelo Webservice
