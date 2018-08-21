@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import br.com.marcos.eitacasei.R;
 import br.com.marcos.eitacasei.dominio.Presente;
@@ -20,7 +21,6 @@ import br.com.marcos.eitacasei.dominio.Presente;
 /**
  * Created by Marcos on 06/05/18.
  */
-
 public class PresenteAdapter extends ArrayAdapter<Presente> {
 
     private final Context context;
@@ -53,5 +53,10 @@ public class PresenteAdapter extends ArrayAdapter<Presente> {
         fotoProduto.setImageBitmap(bitmap);
 
         return rowView;
+    }
+
+    public void setPresentes(List<Presente> presentes){
+        clear();
+        addAll(presentes);
     }
 }

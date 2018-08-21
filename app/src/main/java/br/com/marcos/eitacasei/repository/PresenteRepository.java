@@ -35,6 +35,22 @@ public class PresenteRepository {
         new InsertASync(presenteDao).execute(presente);
     }
 
+    public void atualizar(Presente presente) {
+        new UpdateASync(presenteDao).execute(presente);
+    }
+
+    private class UpdateASync extends AsyncTask<Presente, Void, Void>{
+        private PresenteDao presenteDao;
+
+        public UpdateASync(PresenteDao presenteDao) { this.presenteDao = presenteDao;}
+
+        @Override
+        protected Void doInBackground(Presente... presentes) {
+            presenteDao.atualizarPresente(presentes[0]);
+            return null;
+        }
+    }
+
     private class InsertASync extends AsyncTask<Presente, Void, Void>{
         private PresenteDao presenteDao;
 

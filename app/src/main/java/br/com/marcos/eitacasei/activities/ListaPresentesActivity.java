@@ -2,10 +2,13 @@ package br.com.marcos.eitacasei.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -23,6 +26,7 @@ import br.com.marcos.eitacasei.R;
 import br.com.marcos.eitacasei.adapters.PresenteAdapter;
 import br.com.marcos.eitacasei.dominio.Presente;
 import br.com.marcos.eitacasei.services.PresenteService;
+import br.com.marcos.eitacasei.view.PresenteViewModel;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -34,7 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by Marcos on 06/05/18.
  */
-public class ListaPresentesActivity extends Activity {
+public class ListaPresentesActivity extends AppCompatActivity {
 
     /**
      * Adapter para o ListView de Presentes
@@ -56,14 +60,28 @@ public class ListaPresentesActivity extends Activity {
      */
     private ListView listaPresentes;
 
+    /**
+     * Gerencia os dados relativos a UI em relação aos presentes
+     */
+    private PresenteViewModel presenteViewModel;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lista_presentes);
 
-        listaPresentes = findViewById(R.id.listaPresentes);
+        presenteViewModel = ViewModelProviders.of(this).get(PresenteViewModel.class);
 
-        listaPresentes();
+        presenteViewModel.getListaPresentes().observe(this, new Observer<List<Presente>>() {
+            @Override
+            public void onChanged(@Nullable List<Presente> presentes) {
+                presentesAdapter.setPresentes(presentes);
+            }
+        });
+
+        //listaPresentes = findViewById(R.id.listaPresentes);
+
+        //listaPresentes();
     }
 
     @Override
