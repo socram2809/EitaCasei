@@ -1,24 +1,32 @@
 package br.com.marcos.eitacasei.activities;
 
 import android.app.Activity;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import br.com.marcos.eitacasei.R;
 import br.com.marcos.eitacasei.adapters.ConvidadoAdapter;
+import br.com.marcos.eitacasei.adapters.PresenteAdapter;
 import br.com.marcos.eitacasei.dominio.Convidado;
+import br.com.marcos.eitacasei.dominio.Presente;
+import br.com.marcos.eitacasei.view.ConvidadoViewModel;
+import br.com.marcos.eitacasei.view.PresenteViewModel;
 
 /**
  * Created by Marcos on 06/05/18.
  */
 
-public class ListaConvidadosActivity extends Activity {
+public class ListaConvidadosActivity extends AppCompatActivity {
 
     /**
      * Lista de Convidados
@@ -30,25 +38,29 @@ public class ListaConvidadosActivity extends Activity {
      */
     private ConvidadoAdapter convidadoAdapter;
 
+    /**
+     * Gerencia os dados relativos a UI em relação aos convidados
+     */
+    private ConvidadoViewModel convidadoViewModel;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lista_convidados);
 
-        if(savedInstanceState == null) {
-            convidados = new ArrayList<Convidado>();
-        }else{
-            convidados = (ArrayList<Convidado>) savedInstanceState.getSerializable("convidados");
-        }
         ListView listaConvidados = findViewById(R.id.listaConvidados);
-        convidadoAdapter = new ConvidadoAdapter(this, convidados);
         listaConvidados.setAdapter(convidadoAdapter);
-    }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable("convidados",convidados);
+        convidadoAdapter = new ConvidadoAdapter(this);
+
+        convidadoViewModel = ViewModelProviders.of(this).get(ConvidadoViewModel.class);
+
+        convidadoViewModel.getListaConvidados().observe(this, new Observer<List<Convidado>>() {
+            @Override
+            public void onChanged(@Nullable List<Convidado> convidados) {
+                convidadoAdapter.setConvidados(convidados);
+            }
+        });
     }
 
     /**
@@ -59,7 +71,7 @@ public class ListaConvidadosActivity extends Activity {
         EditText textConvidado = findViewById(R.id.nomeConvidado);
         Convidado convidado = new Convidado();
         convidado.setNome(textConvidado.getText().toString());
-        convidados.add(convidado);
-        convidadoAdapter.notifyDataSetChanged();
+
+        convidadoViewModel.inserir(convidado);
     }
 }

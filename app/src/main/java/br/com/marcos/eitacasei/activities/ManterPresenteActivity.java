@@ -138,6 +138,7 @@ public class ManterPresenteActivity extends AppCompatActivity {
     }
 
     //Mantém o presente pelo Webservice
+    @Deprecated
     private void cadastrarPresente(Presente presente){
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         // Seta o nível de debug do Retrofit

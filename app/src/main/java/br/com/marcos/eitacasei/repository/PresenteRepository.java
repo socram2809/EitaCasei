@@ -39,6 +39,10 @@ public class PresenteRepository {
         new UpdateASync(presenteDao).execute(presente);
     }
 
+    public void remover(Presente presente){
+        new DeleteASync(presenteDao).execute(presente);
+    }
+
     private class UpdateASync extends AsyncTask<Presente, Void, Void>{
         private PresenteDao presenteDao;
 
@@ -61,6 +65,20 @@ public class PresenteRepository {
         @Override
         protected Void doInBackground(Presente... presentes){
             presenteDao.inserirPresente(presentes[0]);
+            return null;
+        }
+    }
+
+    private class DeleteASync extends AsyncTask<Presente, Void, Void>{
+        private PresenteDao presenteDao;
+
+        public DeleteASync(PresenteDao presenteDao){
+            this.presenteDao = presenteDao;
+        }
+
+        @Override
+        protected Void doInBackground(Presente... presentes) {
+            presenteDao.removerPresente(presentes[0]);
             return null;
         }
     }

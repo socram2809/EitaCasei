@@ -33,5 +33,11 @@ public class PresenteViewModel extends AndroidViewModel{
         presenteRepository.atualizar(presente);
     }
 
-    public LiveData<List<Presente>> getListaPresentes() {return listaPresentes;}
+    public void remover(Presente presente){
+        presenteRepository.remover(presente);
+    }
+
+    public LiveData<List<Presente>> getListaPresentes() {
+        return listaPresentes;
+    }
 }

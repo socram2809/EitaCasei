@@ -70,6 +70,12 @@ public class ListaPresentesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lista_presentes);
 
+        listaPresentes = findViewById(R.id.listaPresentes);
+
+        listaPresentes.setAdapter(presentesAdapter);
+
+        presentesAdapter = new PresenteAdapter(this);
+
         presenteViewModel = ViewModelProviders.of(this).get(PresenteViewModel.class);
 
         presenteViewModel.getListaPresentes().observe(this, new Observer<List<Presente>>() {
@@ -78,8 +84,6 @@ public class ListaPresentesActivity extends AppCompatActivity {
                 presentesAdapter.setPresentes(presentes);
             }
         });
-
-        //listaPresentes = findViewById(R.id.listaPresentes);
 
         //listaPresentes();
     }
@@ -136,11 +140,13 @@ public class ListaPresentesActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
-                deletaPresente();
+                //deletaPresente();
 
-                presentes.remove(presenteSelecionado);
+                //presentes.remove(presenteSelecionado);
 
-                presentesAdapter.notifyDataSetChanged();
+                //presentesAdapter.notifyDataSetChanged();
+
+                presenteViewModel.remover(presente);
             }
         });
         //Define um botão como negativo
@@ -159,6 +165,7 @@ public class ListaPresentesActivity extends AppCompatActivity {
     /**
      * Deleta o presente no Web Service
      */
+    @Deprecated
     private void deletaPresente(){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(LoginActivity.baseURL)
@@ -225,6 +232,7 @@ public class ListaPresentesActivity extends AppCompatActivity {
      * Consulta a lista de presentes pelo Web Service
      * @return
      */
+    @Deprecated
     private void listaPresentes(){
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         // Seta o nível de debug do Retrofit
@@ -251,7 +259,7 @@ public class ListaPresentesActivity extends AppCompatActivity {
 
                 presentes = (ArrayList<Presente>) response.body();
 
-                presentesAdapter = new PresenteAdapter(ListaPresentesActivity.this, presentes);
+                presentesAdapter = new PresenteAdapter(ListaPresentesActivity.this);
                 listaPresentes.setAdapter(presentesAdapter);
 
                 registerForContextMenu(listaPresentes);
