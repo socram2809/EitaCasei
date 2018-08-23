@@ -1,12 +1,15 @@
 package br.com.marcos.eitacasei.dominio;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Marcos on 06/05/18.
  */
-
+@Entity
 public class Casal implements Serializable{
 
     /**
@@ -14,11 +17,19 @@ public class Casal implements Serializable{
      */
     public static final String CASAL_INFO = "CasalInfo";
 
+    /**
+     * Identificador do casal
+     */
+    @PrimaryKey(autoGenerate = true)
+    private long id;
+
     private String noivo;
 
     private String noiva;
 
-    private Usuario usuario;
+    private String login;
+
+    private String senha;
 
     public String getNoivo() {
         return noivo;
@@ -36,18 +47,35 @@ public class Casal implements Serializable{
         this.noiva = noiva;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public long getId() {
+        return id;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 
     @Override
     public String toString() {
         return "noivo=" + noivo +
                 ", noiva=" + noiva +
-                ", " + usuario.toString() + "\n";
+                ", login=" + login +
+                ", senha=" + senha + "\n";
     }
 }

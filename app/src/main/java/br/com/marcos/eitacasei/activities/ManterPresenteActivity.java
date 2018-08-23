@@ -85,7 +85,7 @@ public class ManterPresenteActivity extends AppCompatActivity {
         }else{
 
             presente = new Presente();
-            presente.setId(new Long(0));
+            presente.setId(0);
 
         }
     }
@@ -133,6 +133,14 @@ public class ManterPresenteActivity extends AppCompatActivity {
         }else{
             presenteViewModel.atualizar(presente);
         }
+
+        Toast.makeText(ManterPresenteActivity.this,
+                "Presente "+presente.getProduto()+" cadastrado com sucesso!",
+                Toast.LENGTH_SHORT).show();
+
+        Intent telaListaPresentes = new Intent(ManterPresenteActivity.this, ListaPresentesActivity.class);
+
+        startActivity(telaListaPresentes);
 
         //cadastrarPresente(presente);
     }

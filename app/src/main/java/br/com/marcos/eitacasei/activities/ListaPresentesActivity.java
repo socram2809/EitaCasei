@@ -46,19 +46,9 @@ public class ListaPresentesActivity extends AppCompatActivity {
     private PresenteAdapter presentesAdapter;
 
     /**
-     * Define a lista de presentes
-     */
-    private ArrayList<Presente> presentes;
-
-    /**
      * Presente a ser removido
      */
     private Presente presenteSelecionado;
-
-    /**
-     * ListView dos presentes
-     */
-    private ListView listaPresentes;
 
     /**
      * Gerencia os dados relativos a UI em relação aos presentes
@@ -70,8 +60,7 @@ public class ListaPresentesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lista_presentes);
 
-        listaPresentes = findViewById(R.id.listaPresentes);
-
+        ListView listaPresentes = findViewById(R.id.listaPresentes);
         listaPresentes.setAdapter(presentesAdapter);
 
         presentesAdapter = new PresenteAdapter(this);
@@ -100,10 +89,12 @@ public class ListaPresentesActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.editar:
-                editaPresente(presentes.get(info.position));
+                //@TODO Ver como fazer a edição de presente
+                //editaPresente(presentes.get(info.position));
                 return true;
             case R.id.remover:
-                removePresente(presentes.get(info.position));
+                //@TODO Ver como fazer a remoção de presente
+                //removePresente(presentes.get(info.position));
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -257,12 +248,12 @@ public class ListaPresentesActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Presente>> call, Response<List<Presente>> response) {
 
-                presentes = (ArrayList<Presente>) response.body();
+                //presentes = (ArrayList<Presente>) response.body();
 
                 presentesAdapter = new PresenteAdapter(ListaPresentesActivity.this);
-                listaPresentes.setAdapter(presentesAdapter);
+                //listaPresentes.setAdapter(presentesAdapter);
 
-                registerForContextMenu(listaPresentes);
+                //registerForContextMenu(listaPresentes);
             }
 
             @Override

@@ -42,9 +42,8 @@ public class ManterCasalActivity extends Activity {
         EditText noiva = findViewById(R.id.noiva);
 
         Casal casal = new Casal();
-        casal.setUsuario(new Usuario());
-        casal.getUsuario().setLogin(login.getText().toString());
-        casal.getUsuario().setSenha(senha.getText().toString());;
+        casal.setLogin(login.getText().toString());
+        casal.setSenha(senha.getText().toString());
         casal.setNoivo(noivo.getText().toString());
         casal.setNoiva(noiva.getText().toString());
 

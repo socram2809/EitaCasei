@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Marcos on 06/05/18.
  */
-
+@Deprecated
 public class Usuario implements Serializable{
 
     private String login;
