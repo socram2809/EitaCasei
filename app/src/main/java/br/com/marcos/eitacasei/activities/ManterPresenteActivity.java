@@ -29,16 +29,6 @@ import java.util.logging.Level;
 
 import br.com.marcos.eitacasei.R;
 import br.com.marcos.eitacasei.dominio.Presente;
-import br.com.marcos.eitacasei.dominio.SerialBitmap;
-import br.com.marcos.eitacasei.services.PresenteService;
-import br.com.marcos.eitacasei.view.PresenteViewModel;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Marcos on 06/05/18.
@@ -46,28 +36,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ManterPresenteActivity extends AppCompatActivity {
 
     /**
-     * Presente a ser mantido
-     */
-    private Presente presente;
-
-    /**
      * Constante que identifica a subActivity de tirar foto
      */
     private static final int TIRAR_FOTO = 1;
-
-    /**
-     * Gerencia os dados relativos a UI em relação aos presentes
-     */
-    private PresenteViewModel presenteViewModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.manter_presente);
 
-        presenteViewModel = ViewModelProviders.of(this).get(PresenteViewModel.class);
-
-        Intent edicaoPresente = getIntent();
+        /*Intent edicaoPresente = getIntent();
 
         //Caso seja a alteração de um presente
         if(edicaoPresente != null && edicaoPresente.getExtras() != null
@@ -87,7 +65,7 @@ public class ManterPresenteActivity extends AppCompatActivity {
             presente = new Presente();
             presente.setId(0);
 
-        }
+        }*/
     }
 
     /**
@@ -118,6 +96,8 @@ public class ManterPresenteActivity extends AppCompatActivity {
      * @param view
      */
     public void manterPresente(View view){
+        Presente presente = new Presente();
+
         EditText nomeProduto = findViewById(R.id.nomeProduto);
         ImageView fotoProduto = findViewById(R.id.fotoProduto);
         presente.setProduto(nomeProduto.getText().toString());
@@ -128,26 +108,18 @@ public class ManterPresenteActivity extends AppCompatActivity {
         String temp = Base64.encodeToString(b, Base64.DEFAULT);
         presente.setFoto(temp);
 
-        if(presente.getId() == 0){
-            presenteViewModel.inserir(presente);
-        }else{
-            presenteViewModel.atualizar(presente);
-        }
+        Intent telaListaPresentes = new Intent();
 
-        Toast.makeText(ManterPresenteActivity.this,
-                "Presente "+presente.getProduto()+" cadastrado com sucesso!",
-                Toast.LENGTH_SHORT).show();
+        telaListaPresentes.putExtra(Presente.PRESENTE_INFO, presente);
+        setResult(RESULT_OK, telaListaPresentes);
 
-        Intent telaListaPresentes = new Intent(ManterPresenteActivity.this, ListaPresentesActivity.class);
-
-        startActivity(telaListaPresentes);
+        finish();
 
         //cadastrarPresente(presente);
     }
 
     //Mantém o presente pelo Webservice
-    @Deprecated
-    private void cadastrarPresente(Presente presente){
+    /*private void cadastrarPresente(Presente presente){
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         // Seta o nível de debug do Retrofit
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -187,7 +159,7 @@ public class ManterPresenteActivity extends AppCompatActivity {
                 Log.e(ManterPresenteActivity.this.getClass().getName(), "ERRO", t);
             }
         });
-    }
+    }*/
 
     /**
      * Volta para a listagem de presentes

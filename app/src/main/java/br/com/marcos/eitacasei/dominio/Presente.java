@@ -1,6 +1,7 @@
 package br.com.marcos.eitacasei.dominio;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.graphics.Bitmap;
 
@@ -16,7 +17,6 @@ public class Presente implements Serializable {
     /**
      * Chave que identifica o presente
      */
-    @Deprecated
     public static final String PRESENTE_INFO = "PresenteInfo";
 
     /**

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -23,7 +24,7 @@ import br.com.marcos.eitacasei.dominio.Usuario;
  * Created by Marcos on 05/05/18.
  */
 
-public class ManterCasalActivity extends Activity {
+public class ManterCasalActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

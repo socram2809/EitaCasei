@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,22 +23,42 @@ import br.com.marcos.eitacasei.dominio.Presente;
 /**
  * Created by Marcos on 06/05/18.
  */
-public class PresenteAdapter extends ArrayAdapter<Presente> {
+public class PresenteAdapter extends BaseAdapter {
 
-    public PresenteAdapter(@NonNull Context context) {
-        super(context, 0, new ArrayList<Presente>());
+    private List<Presente> presentes;
+
+    private Context context;
+
+    public PresenteAdapter(Context context) {
+        this.context = context;
+        setPresentes(new ArrayList<Presente>());
+    }
+
+    @Override
+    public int getCount() {
+        return presentes.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return presentes.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View rowView = LayoutInflater.from(getContext())
+        View rowView = LayoutInflater.from(context)
                 .inflate(R.layout.presente_layout, parent, false);
 
         TextView textProduto = rowView.findViewById(R.id.produto);
         ImageView fotoProduto = rowView.findViewById(R.id.foto);
 
-        Presente presente = getItem(position);
+        Presente presente = (Presente) getItem(position);
 
         textProduto.setText(presente.getProduto());
 
@@ -49,7 +70,6 @@ public class PresenteAdapter extends ArrayAdapter<Presente> {
     }
 
     public void setPresentes(List<Presente> presentes){
-        clear();
-        addAll(presentes);
+        this.presentes = presentes;
     }
 }
