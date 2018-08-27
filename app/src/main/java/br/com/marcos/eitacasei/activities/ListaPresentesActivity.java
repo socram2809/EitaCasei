@@ -71,7 +71,6 @@ public class ListaPresentesActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable List<Presente> presentes) {
                 presentesAdapter.setPresentes(presentes);
-                presentesAdapter.notifyDataSetChanged();
             }
         });
 

@@ -1,5 +1,6 @@
 package br.com.marcos.eitacasei.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,11 +28,11 @@ public class PresenteAdapter extends BaseAdapter {
 
     private List<Presente> presentes;
 
-    private Context context;
+    private Activity activity;
 
-    public PresenteAdapter(Context context) {
-        this.context = context;
-        setPresentes(new ArrayList<Presente>());
+    public PresenteAdapter(Activity activity) {
+        this.activity = activity;
+        presentes = new ArrayList<Presente>();
     }
 
     @Override
@@ -52,7 +53,7 @@ public class PresenteAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View rowView = LayoutInflater.from(context)
+        View rowView = activity.getLayoutInflater()
                 .inflate(R.layout.presente_layout, parent, false);
 
         TextView textProduto = rowView.findViewById(R.id.produto);
@@ -70,6 +71,7 @@ public class PresenteAdapter extends BaseAdapter {
     }
 
     public void setPresentes(List<Presente> presentes){
-        this.presentes = presentes;
+        presentes.addAll(presentes);
+        notifyDataSetChanged();
     }
 }
