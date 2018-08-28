@@ -1,16 +1,13 @@
 package br.com.marcos.eitacasei.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,9 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,19 +46,24 @@ public class ListaPresentesActivity extends AppCompatActivity {
     private PresenteViewModel presenteViewModel;
 
     /**
-     * Constante que identifica a activity de cadastro de presentes
+     * Constante que identifica a activity para cadastrar presentes
      */
     private static final int CADASTRAR_PRESENTE = 1;
+
+    /**
+     * Constante que identifica a activity para editar presentes
+     */
+    private static final int EDITAR_PRESENTE = 2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lista_presentes);
 
+        presentesAdapter = new PresenteAdapter(this, new ArrayList<Presente>());
+
         ListView listaPresentes = findViewById(R.id.listaPresentes);
         listaPresentes.setAdapter(presentesAdapter);
-
-        presentesAdapter = new PresenteAdapter(this);
 
         presenteViewModel = ViewModelProviders.of(this).get(PresenteViewModel.class);
 
@@ -71,6 +71,7 @@ public class ListaPresentesActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable List<Presente> presentes) {
                 presentesAdapter.setPresentes(presentes);
+                presentesAdapter.notifyDataSetChanged();
             }
         });
 
@@ -83,14 +84,14 @@ public class ListaPresentesActivity extends AppCompatActivity {
             }
         });
 
-        //listaPresentes();
+        registerForContextMenu(listaPresentes);
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_presente, menu);
+        inflater.inflate(R.menu.menu_selecao, menu);
     }
 
     @Override
@@ -98,12 +99,10 @@ public class ListaPresentesActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.editar:
-                //@TODO Ver como fazer a edição de presente
-                //editaPresente(presentes.get(info.position));
+                editaPresente((Presente) presentesAdapter.getItem(info.position));
                 return true;
             case R.id.remover:
-                //@TODO Ver como fazer a remoção de presente
-                //removePresente(presentes.get(info.position));
+                removePresente((Presente) presentesAdapter.getItem(info.position));
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -126,6 +125,10 @@ public class ListaPresentesActivity extends AppCompatActivity {
                 Intent telaListaConvidado = new Intent(this, ListaConvidadosActivity.class);
                 startActivity(telaListaConvidado);
                 return true;
+            case R.id.cadastrarCasal:
+                Intent telaListaCasal = new Intent(this, ListaCasaisActivity.class);
+                startActivity(telaListaCasal);
+                return true;
             case R.id.logout:
                 Intent telaLogin = new Intent(this, LoginActivity.class);
                 startActivity(telaLogin);
@@ -144,11 +147,10 @@ public class ListaPresentesActivity extends AppCompatActivity {
 
         if(resultCode == this.RESULT_OK && requestCode == CADASTRAR_PRESENTE){
             Presente presente = (Presente) data.getExtras().get(Presente.PRESENTE_INFO);
-            if(presente.getId() == 0) {
-                presenteViewModel.inserir(presente);
-            }else{
-                presenteViewModel.atualizar(presente);
-            }
+            presenteViewModel.inserir(presente);
+        }else if(resultCode == this.RESULT_OK && requestCode == EDITAR_PRESENTE){
+            Presente presente = (Presente) data.getExtras().get(Presente.PRESENTE_INFO);
+            presenteViewModel.atualizar(presente);
         }
     }
 
@@ -161,7 +163,7 @@ public class ListaPresentesActivity extends AppCompatActivity {
 
         editarPresente.putExtra(Presente.PRESENTE_EDIT, presente);
 
-        startActivity(editarPresente);
+        startActivityForResult(editarPresente, EDITAR_PRESENTE);
     }
 
     /**
@@ -181,14 +183,7 @@ public class ListaPresentesActivity extends AppCompatActivity {
         builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
-                //deletaPresente();
-
-                //presentes.remove(presenteSelecionado);
-
-                //presentesAdapter.notifyDataSetChanged();
-
-                presenteViewModel.remover(presente);
+                presenteViewModel.remover(presenteSelecionado);
             }
         });
         //Define um botão como negativo
@@ -203,77 +198,4 @@ public class ListaPresentesActivity extends AppCompatActivity {
         //Exibe
         alert.show();
     }
-
-    /**
-     * Deleta o presente no Web Service
-     */
-    /*private void deletaPresente(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(LoginActivity.baseURL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        PresenteService service = retrofit.create(PresenteService.class);
-
-        Call<Presente> callPresente = service.deletaPresente(presenteSelecionado.getId());
-
-        callPresente.enqueue(new Callback<Presente>(){
-
-            @Override
-            public void onResponse(Call<Presente> call, Response<Presente> response) {
-
-                Toast.makeText(ListaPresentesActivity.this,
-                        "Presente "+presenteSelecionado.getProduto()+" removido com sucesso!",
-                        Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(Call<Presente> call, Throwable t) {
-                Log.e(ListaPresentesActivity.this.getClass().getName(), "ERRO", t);
-            }
-        });
-    }*/
-
-    /**
-     * Consulta a lista de presentes pelo Web Service
-     * @return
-     */
-    /*private void listaPresentes(){
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        // Seta o nível de debug do Retrofit
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-        //Adiciona o interceptor de log
-        httpClient.addInterceptor(logging);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(LoginActivity.baseURL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
-                .build();
-
-        PresenteService service = retrofit.create(PresenteService.class);
-
-        Call<List<Presente>> callPresentes = service.listarPresentes();
-
-        callPresentes.enqueue(new Callback<List<Presente>>() {
-            @Override
-            public void onResponse(Call<List<Presente>> call, Response<List<Presente>> response) {
-
-                //presentes = (ArrayList<Presente>) response.body();
-
-                presentesAdapter = new PresenteAdapter(ListaPresentesActivity.this);
-                //listaPresentes.setAdapter(presentesAdapter);
-
-                //registerForContextMenu(listaPresentes);
-            }
-
-            @Override
-            public void onFailure(Call<List<Presente>> call, Throwable t) {
-                Log.e(ListaPresentesActivity.this.getClass().getName(), "ERRO", t);
-            }
-        });
-    }*/
 }

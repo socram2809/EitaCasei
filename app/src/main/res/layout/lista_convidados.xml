@@ -23,14 +23,28 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <Button
         android:id="@+id/botaoConvidado"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Cadastrar Convidado"
         android:onClick="cadastrarConvidado"
         android:layout_gravity="center"
         android:gravity="center"/>
+
+    <Button
+        android:id="@+id/cancelar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancelar"
+        android:onClick="cancelar"/>
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/listaConvidados"

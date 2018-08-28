@@ -18,6 +18,11 @@ public class Casal implements Serializable{
     public static final String CASAL_INFO = "CasalInfo";
 
     /**
+     * Chave que identifica a edição de casais
+     */
+    public static final String CASAL_EDIT = "CasalEdicao";
+
+    /**
      * Identificador do casal
      */
     @PrimaryKey(autoGenerate = true)

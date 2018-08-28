@@ -23,6 +23,9 @@
         <activity android:name=".activities.ManterCasalActivity">
         </activity>
 
+        <activity android:name=".activities.ListaCasaisActivity">
+        </activity>
+
         <activity android:name=".activities.ListaConvidadosActivity">
         </activity>
 

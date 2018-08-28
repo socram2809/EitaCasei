@@ -79,13 +79,27 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/cadastrarCasal"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="cadastrarCasal"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="Cadastrar"/>
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/cadastrarCasal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="manterCasal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Cadastrar"/>
+
+        <Button
+            android:id="@+id/cancelar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancelar"
+            android:onClick="cancelar"/>
+
+    </LinearLayout>
 
 </LinearLayout>

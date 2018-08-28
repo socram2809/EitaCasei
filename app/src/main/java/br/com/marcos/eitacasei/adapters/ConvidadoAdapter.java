@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,21 +20,41 @@ import br.com.marcos.eitacasei.dominio.Presente;
  * Created by Marcos on 06/05/18.
  */
 
-public class ConvidadoAdapter extends ArrayAdapter<Convidado> {
+public class ConvidadoAdapter extends BaseAdapter {
 
-    public ConvidadoAdapter(Context context) {
-        super(context, 0, new ArrayList<Convidado>());
+    private ArrayList<Convidado> convidados;
+
+    private Context context;
+
+    public ConvidadoAdapter(Context context, ArrayList<Convidado> convidados) {
+        this.context = context;
+        this.convidados = convidados;
+    }
+
+    @Override
+    public int getCount() {
+        return convidados.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return convidados.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View rowView = LayoutInflater.from(getContext())
+        View rowView = LayoutInflater.from(context)
                 .inflate(R.layout.convidado_layout, parent, false);
 
         TextView textConvidado = rowView.findViewById(R.id.convidado);
 
-        Convidado convidado = getItem(position);
+        Convidado convidado = (Convidado) getItem(position);
 
         textConvidado.setText(convidado.getNome());
 
@@ -41,7 +62,7 @@ public class ConvidadoAdapter extends ArrayAdapter<Convidado> {
     }
 
     public void setConvidados(List<Convidado> convidados){
-        clear();
-        addAll(convidados);
+        this.convidados.clear();
+        this.convidados.addAll(convidados);
     }
 }

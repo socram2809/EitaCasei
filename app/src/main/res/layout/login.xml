@@ -64,7 +64,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:padding="20px"
-            android:onClick="cadastrarUsuario"
+            android:onClick="cadastrarCasal"
             android:text="Cadastre-se Casal"/>
 
     </LinearLayout>

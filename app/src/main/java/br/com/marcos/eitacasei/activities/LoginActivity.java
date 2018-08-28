@@ -1,7 +1,7 @@
 package br.com.marcos.eitacasei.activities;
 
-import android.app.Activity;
-import android.content.Context;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -25,8 +25,9 @@ import java.util.Map;
 
 import br.com.marcos.eitacasei.R;
 import br.com.marcos.eitacasei.dominio.Casal;
-import br.com.marcos.eitacasei.dominio.Convidado;
-import br.com.marcos.eitacasei.dominio.Usuario;
+import br.com.marcos.eitacasei.dominio.Presente;
+import br.com.marcos.eitacasei.view.CasalViewModel;
+import br.com.marcos.eitacasei.view.PresenteViewModel;
 
 /**
  * Created by Marcos on 05/05/18.
@@ -35,14 +36,33 @@ import br.com.marcos.eitacasei.dominio.Usuario;
 public class LoginActivity extends AppCompatActivity {
 
     /**
-     * URI base para o serviço
+     * Gerencia os dados relativos a UI em relação aos casais
      */
-    public static final String baseURL = "http://eitacaseiservice.herokuapp.com";
+    private CasalViewModel casalViewModel;
+
+    /**
+     * Lista de casais
+     */
+    private List<Casal> casais;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+
+        if(savedInstanceState == null) {
+            casais = new ArrayList<>();
+        }
+
+        casalViewModel = ViewModelProviders.of(this).get(CasalViewModel.class);
+
+        casalViewModel.getListaCasais().observe(this, new Observer<List<Casal>>() {
+            @Override
+            public void onChanged(@Nullable List<Casal> casaisParaLogin) {
+                casais.clear();
+                casais.addAll(casaisParaLogin);
+            }
+        });
 
         //Recupera o login, caso já tenha sido feito no aplicativo
         SharedPreferences preferencias = getSharedPreferences("PREF_LOGIN", MODE_PRIVATE);
@@ -58,115 +78,47 @@ public class LoginActivity extends AppCompatActivity {
         EditText login = findViewById(R.id.login);
         EditText senha = findViewById(R.id.senha);
 
-        String state = Environment.getExternalStorageState();
+        boolean casalVerificado = false;
 
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-
-            String FILENAME = "casais.txt";
-
-            File folder;
-
-            //Memória Interna
-            folder = getFilesDir();
-
-            BufferedReader br = null;
-            FileReader fr = null;
-
-            try {
-
-                File arquivo = new File(folder, FILENAME);
-
-                fr = new FileReader(arquivo);
-                br = new BufferedReader(fr);
-
-                String sCurrentLine;
-
-                List<Map<String, String>> usuarios = new ArrayList<Map<String, String>>();
-
-                boolean usuarioVerificado = false;
-
-                Map<String, String> usuarioLogado = new LinkedHashMap<String, String>();
-
-                while ((sCurrentLine = br.readLine()) != null) {
-                    Map<String, String> usuario = new LinkedHashMap<String, String>();
-                    for (String keyValue : sCurrentLine.split(", ")) {
-                        String[] parts = keyValue.split("=", 2);
-                        usuario.put(parts[0], parts[1]);
-                    }
-                    usuarios.add(usuario);
-                }
-
-                //Verifica a autenticidade do usuário
-                for (Map<String, String> usr : usuarios) {
-                    if (login.getText().toString().equals(usr.get("login"))
-                            && senha.getText().toString().equals(usr.get("senha"))) {
-                        usuarioVerificado = true;
-                        usuarioLogado = usr;
-                        break;
-                    }
-                }
-
-                if (usuarioVerificado) {
-
-                    SharedPreferences preferencias = getSharedPreferences("PREF_LOGIN", MODE_PRIVATE);
-
-                    SharedPreferences.Editor editor = preferencias.edit();
-
-                    editor.putString("login", login.getText().toString());
-
-                    editor.commit();
-
-                    Intent telaListaPresentes = new Intent(this, ListaPresentesActivity.class);
-
-                    startActivity(telaListaPresentes);
-
-                } else {
-                    Toast toast = Toast.makeText(this, "Usuário/Senha inválidos",
-                            Toast.LENGTH_LONG);
-                    toast.show();
-                }
-
-            } catch(FileNotFoundException e){
-
-                Toast toast = Toast.makeText(this, "Nenhum usuário cadastrado",
-                        Toast.LENGTH_LONG);
-                toast.show();
-
-                Log.e("eitacasei", "Arquivo não encontrado", e);
-
-            } catch(IOException e) {
-
-                Log.e("eitacasei", "Erro ao abrir arquivo", e);
-
-            } finally {
-
-                try {
-
-                    if (br != null)
-                        br.close();
-
-                    if (fr != null)
-                        fr.close();
-
-                } catch (IOException ex) {
-
-                    Log.e("eitacasei", "Erro ao fechar conexão com o arquivo", ex);
-
-                }
-
+        //Verifica a autenticidade do casal
+        for (Casal casal : casais) {
+            if (login.getText().toString().equals(casal.getLogin())
+                    && senha.getText().toString().equals(casal.getSenha())) {
+                casalVerificado = true;
+                break;
             }
+        }
+
+        if (casalVerificado) {
+
+            SharedPreferences preferencias = getSharedPreferences("PREF_LOGIN", MODE_PRIVATE);
+
+            SharedPreferences.Editor editor = preferencias.edit();
+
+            editor.putString("login", login.getText().toString());
+
+            editor.commit();
+
+            Intent telaListaPresentes = new Intent(this, ListaPresentesActivity.class);
+
+            startActivity(telaListaPresentes);
+
+        } else {
+            Toast toast = Toast.makeText(this, "Usuário/Senha inválidos",
+                    Toast.LENGTH_LONG);
+            toast.show();
         }
     }
 
     /**
-     * Redireciona para a página de cadastro de usuário
+     * Redireciona para a página de cadastro de casais
      * @param view
      */
-    public void cadastrarUsuario(View view){
+    public void cadastrarCasal(View view){
 
-        Intent telaCadastroUsuario = new Intent(this, ManterCasalActivity.class);
+        Intent telaListaCasais = new Intent(this, ListaCasaisActivity.class);
 
-        startActivity(telaCadastroUsuario);
+        startActivity(telaListaCasais);
 
     }
 }

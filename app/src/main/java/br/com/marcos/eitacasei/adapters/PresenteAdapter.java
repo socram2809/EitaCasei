@@ -26,13 +26,13 @@ import br.com.marcos.eitacasei.dominio.Presente;
  */
 public class PresenteAdapter extends BaseAdapter {
 
-    private List<Presente> presentes;
+    private ArrayList<Presente> presentes;
 
-    private Activity activity;
+    private Context context;
 
-    public PresenteAdapter(Activity activity) {
-        this.activity = activity;
-        presentes = new ArrayList<Presente>();
+    public PresenteAdapter(Context context, ArrayList<Presente> presentes) {
+        this.context = context;
+        this.presentes = presentes;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class PresenteAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View rowView = activity.getLayoutInflater()
+        View rowView = LayoutInflater.from(context)
                 .inflate(R.layout.presente_layout, parent, false);
 
         TextView textProduto = rowView.findViewById(R.id.produto);
@@ -71,7 +71,7 @@ public class PresenteAdapter extends BaseAdapter {
     }
 
     public void setPresentes(List<Presente> presentes){
-        presentes.addAll(presentes);
-        notifyDataSetChanged();
+        this.presentes.clear();
+        this.presentes.addAll(presentes);
     }
 }

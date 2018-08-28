@@ -29,5 +29,8 @@ public interface CasalDao {
     public void removerCasal(Casal casal);
 
     @Query("SELECT * FROM Casal ORDER BY id ASC")
+    public List<Casal> buscaCasaisParaLogin();
+
+    @Query("SELECT * FROM Casal ORDER BY id ASC")
     public LiveData<List<Casal>> buscarTodosCasais();
 }

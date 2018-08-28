@@ -40,12 +40,17 @@ public class ManterPresenteActivity extends AppCompatActivity {
      */
     private static final int TIRAR_FOTO = 1;
 
+    /**
+     * Presente sendo manipulado
+     */
+    private Presente presente;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.manter_presente);
 
-        /*Intent edicaoPresente = getIntent();
+        Intent edicaoPresente = getIntent();
 
         //Caso seja a alteração de um presente
         if(edicaoPresente != null && edicaoPresente.getExtras() != null
@@ -65,7 +70,7 @@ public class ManterPresenteActivity extends AppCompatActivity {
             presente = new Presente();
             presente.setId(0);
 
-        }*/
+        }
     }
 
     /**
@@ -96,7 +101,6 @@ public class ManterPresenteActivity extends AppCompatActivity {
      * @param view
      */
     public void manterPresente(View view){
-        Presente presente = new Presente();
 
         EditText nomeProduto = findViewById(R.id.nomeProduto);
         ImageView fotoProduto = findViewById(R.id.fotoProduto);
@@ -114,52 +118,7 @@ public class ManterPresenteActivity extends AppCompatActivity {
         setResult(RESULT_OK, telaListaPresentes);
 
         finish();
-
-        //cadastrarPresente(presente);
     }
-
-    //Mantém o presente pelo Webservice
-    /*private void cadastrarPresente(Presente presente){
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        // Seta o nível de debug do Retrofit
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-        //Adiciona o interceptor de log
-        httpClient.addInterceptor(logging);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(LoginActivity.baseURL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build())
-                .build();
-
-        PresenteService service = retrofit.create(PresenteService.class);
-
-        Call<Presente> callPresente = service.manterPresente(presente);
-
-        callPresente.enqueue(new Callback<Presente>(){
-
-            @Override
-            public void onResponse(Call<Presente> call, Response<Presente> response) {
-                Presente presente = response.body();
-
-                Toast.makeText(ManterPresenteActivity.this,
-                        "Presente "+presente.getProduto()+" cadastrado com sucesso!",
-                        Toast.LENGTH_SHORT).show();
-
-                Intent telaListaPresentes = new Intent(ManterPresenteActivity.this, ListaPresentesActivity.class);
-
-                startActivity(telaListaPresentes);
-            }
-
-            @Override
-            public void onFailure(Call<Presente> call, Throwable t) {
-                Log.e(ManterPresenteActivity.this.getClass().getName(), "ERRO", t);
-            }
-        });
-    }*/
 
     /**
      * Volta para a listagem de presentes
