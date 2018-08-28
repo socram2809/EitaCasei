@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import br.com.marcos.eitacasei.R;
 import br.com.marcos.eitacasei.activities.ListaPresentesActivity;
 import br.com.marcos.eitacasei.activities.LoginActivity;
 
@@ -39,6 +40,7 @@ public class SessaoService extends Service {
                 .setContentText("Casal " + preferencias.getString("login", "") + " está logado")
                 .setContentIntent(intentPendente)
                 .setTicker("Serviço de Notificação de Casal Logado")
+                .setSmallIcon(R.drawable.ic_launcher_background)
                 .build();
 
         startForeground(NOTIFICACAO_CASAL_LOGADO, notificacao);

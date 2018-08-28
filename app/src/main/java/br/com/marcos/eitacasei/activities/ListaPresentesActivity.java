@@ -3,8 +3,11 @@ package br.com.marcos.eitacasei.activities;
 import android.app.AlertDialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,12 +135,24 @@ public class ListaPresentesActivity extends AppCompatActivity {
                 startActivity(telaListaCasal);
                 return true;
             case R.id.compartilharApp:
-                Intent intentCompartilhar = new Intent();
-                intentCompartilhar.setAction(Intent.ACTION_SEND);
-                intentCompartilhar.putExtra(Intent.EXTRA_TEXT, "Conheça o aplicativo EitaCasei, " +
-                        "disponível em https://github.com/socram2809/EitaCasei");
-                intentCompartilhar.setType("text/plain");
-                startActivity(Intent.createChooser(intentCompartilhar, "Compartilhar"));
+                ConnectivityManager cm =
+                        (ConnectivityManager) getApplicationContext()
+                                .getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo redeAtiva = cm.getActiveNetworkInfo();
+                boolean estaConectado = redeAtiva != null && redeAtiva.isConnectedOrConnecting();
+                if(estaConectado){
+                    Intent intentCompartilhar = new Intent();
+                    intentCompartilhar.setAction(Intent.ACTION_SEND);
+                    intentCompartilhar.putExtra(Intent.EXTRA_TEXT, "Conheça o aplicativo EitaCasei, " +
+                            "disponível em https://github.com/socram2809/EitaCasei");
+                    intentCompartilhar.setType("text/plain");
+                    startActivity(Intent.createChooser(intentCompartilhar, "Compartilhar"));
+                }else{
+                    Toast toast = Toast
+                            .makeText(this, "Não há conexão com Internet",
+                            Toast.LENGTH_LONG);
+                    toast.show();
+                }
                 return true;
             case R.id.logout:
                 Intent telaLogin = new Intent(this, LoginActivity.class);
