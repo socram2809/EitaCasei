@@ -23,6 +23,7 @@ import java.util.List;
 import br.com.marcos.eitacasei.R;
 import br.com.marcos.eitacasei.adapters.PresenteAdapter;
 import br.com.marcos.eitacasei.dominio.Presente;
+import br.com.marcos.eitacasei.services.SessaoService;
 import br.com.marcos.eitacasei.view.PresenteViewModel;
 
 /**
@@ -129,8 +130,18 @@ public class ListaPresentesActivity extends AppCompatActivity {
                 Intent telaListaCasal = new Intent(this, ListaCasaisActivity.class);
                 startActivity(telaListaCasal);
                 return true;
+            case R.id.compartilharApp:
+                Intent intentCompartilhar = new Intent();
+                intentCompartilhar.setAction(Intent.ACTION_SEND);
+                intentCompartilhar.putExtra(Intent.EXTRA_TEXT, "Conheça o aplicativo EitaCasei, " +
+                        "disponível em https://github.com/socram2809/EitaCasei");
+                intentCompartilhar.setType("text/plain");
+                startActivity(Intent.createChooser(intentCompartilhar, "Compartilhar"));
+                return true;
             case R.id.logout:
                 Intent telaLogin = new Intent(this, LoginActivity.class);
+                Intent notificacaoUsuarioLogado = new Intent(this, SessaoService.class);
+                stopService(notificacaoUsuarioLogado);
                 startActivity(telaLogin);
                 return true;
             default:

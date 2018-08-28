@@ -13,6 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <!-- Activities -->
+
         <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,6 +36,10 @@
 
         <activity android:name=".activities.ManterPresenteActivity">
         </activity>
+
+        <!-- Services -->
+
+        <service android:name=".services.SessaoService" />
 
     </application>
 </manifest>

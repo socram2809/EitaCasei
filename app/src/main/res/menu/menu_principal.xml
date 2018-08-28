@@ -4,6 +4,8 @@
         android:title="Cadastrar Casal"/>
     <item android:id="@+id/cadastrarConvidado"
         android:title="Cadastrar Convidado"/>
+    <item android:id="@+id/compartilharApp"
+        android:title="Compartilhar"/>
     <item android:id="@+id/logout"
         android:title="Sair"/>
 </menu>

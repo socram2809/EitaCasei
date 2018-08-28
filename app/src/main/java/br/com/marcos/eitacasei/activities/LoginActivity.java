@@ -26,6 +26,7 @@ import java.util.Map;
 import br.com.marcos.eitacasei.R;
 import br.com.marcos.eitacasei.dominio.Casal;
 import br.com.marcos.eitacasei.dominio.Presente;
+import br.com.marcos.eitacasei.services.SessaoService;
 import br.com.marcos.eitacasei.view.CasalViewModel;
 import br.com.marcos.eitacasei.view.PresenteViewModel;
 
@@ -100,6 +101,10 @@ public class LoginActivity extends AppCompatActivity {
             editor.commit();
 
             Intent telaListaPresentes = new Intent(this, ListaPresentesActivity.class);
+
+            Intent notificacaoUsuarioLogado = new Intent(this, SessaoService.class);
+
+            startService(notificacaoUsuarioLogado);
 
             startActivity(telaListaPresentes);
 
